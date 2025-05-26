@@ -1,4 +1,4 @@
-import {EventDispatcher, TextureLoader, RepeatWrapping, Vector2, Vector3, MeshBasicMaterial, FrontSide, DoubleSide, BackSide, Shape, Path, ShapeGeometry, Mesh, Geometry, Face3, } from 'three';
+import {EventDispatcher, TextureLoader, RepeatWrapping, Vector2, Vector3, MeshBasicMaterial, FrontSide, DoubleSide, BackSide, Shape, Path, ShapeGeometry, Mesh, Geometry, Face3, Group} from 'three';
 import {Utils} from '../core/utils.js';
 import {EVENT_REDRAW, EVENT_CAMERA_MOVED, EVENT_CAMERA_ACTIVE_STATUS} from '../core/events.js';
 
