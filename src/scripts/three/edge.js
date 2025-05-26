@@ -231,8 +231,8 @@ export class Edge extends EventDispatcher
 		{
 			this.planes.push(this.makeWall(this.edge.exteriorStart(), this.edge.exteriorEnd(), this.edge.exteriorTransform, this.edge.invExteriorTransform, fillerMaterial));
 		}
-		// interior plane
-		this.planes.push(this.makeWall(this.edge.interiorStart(), this.edge.interiorEnd(), this.edge.interiorTransform, this.edge.invInteriorTransform, wallMaterial));
+                // interior plane with cladding
+                this.planes.push(this.makeCladding(this.edge.interiorStart(), this.edge.interiorEnd(), this.edge.interiorTransform, this.edge.invInteriorTransform, wallMaterial));
 		// bottom
 		// put into basePlanes since this is always visible
 		this.basePlanes.push(this.buildFillerUniformHeight(this.edge, 0, BackSide, this.baseColor));
@@ -249,8 +249,8 @@ export class Edge extends EventDispatcher
 	}
 
 	// start, end have x and y attributes (i.e. corners)
-	makeWall(start, end, transform, invTransform, material)
-	{
+        makeWall(start, end, transform, invTransform, material)
+        {
 		var v1 = this.toVec3(start);
 		var v2 = this.toVec3(end);
 		var v3 = v2.clone();
@@ -311,10 +311,86 @@ export class Edge extends EventDispatcher
 			return new Vector2(x, y);
 		}
 
-		var mesh = new Mesh(geometry, material);
-		mesh.name = 'wall';
-		return mesh;
-	}
+                var mesh = new Mesh(geometry, material);
+                mesh.name = 'wall';
+                return mesh;
+        }
+
+        makeCladding(start, end, transform, invTransform, material)
+        {
+                var reveal = Configuration.getNumericValue(configWallCladdingReveal);
+                var group = new Group();
+                var boardCount = Math.ceil(this.wall.height / reveal);
+                for (var i = 0; i < boardCount; i++)
+                {
+                        var bottom = i * reveal;
+                        var top = Math.min((i + 1) * reveal, this.wall.height);
+                        var mesh = this.makeWallSection(start, end, bottom, top, transform, invTransform, material);
+                        group.add(mesh);
+                }
+                return group;
+        }
+
+        makeWallSection(start, end, bottom, top, transform, invTransform, material)
+        {
+                var v1 = this.toVec3(start, bottom + this.edge.getStart().elevation);
+                var v2 = this.toVec3(end, bottom + this.edge.getEnd().elevation);
+                var v3 = this.toVec3(end, top + this.edge.getEnd().elevation);
+                var v4 = this.toVec3(start, top + this.edge.getStart().elevation);
+
+                var points = [v1.clone(), v2.clone(), v3.clone(), v4.clone()];
+                points.forEach((p) => {p.applyMatrix4(transform);});
+                var spoints = [new Vector2(points[0].x, points[0].y),new Vector2(points[1].x, points[1].y),new Vector2(points[2].x, points[2].y),new Vector2(points[3].x, points[3].y)];
+                var shape = new Shape(spoints);
+
+                this.wall.items.forEach((item) => {
+                        var itemBottom = item.position.y - item.halfSize.y;
+                        var itemTop = item.position.y + item.halfSize.y;
+                        if (itemTop < bottom || itemBottom > top)
+                        {
+                                return;
+                        }
+                        var pos = item.position.clone();
+                        pos.applyMatrix4(transform);
+                        var halfSize = item.halfSize;
+                        var min = halfSize.clone().multiplyScalar(-1);
+                        var max = halfSize.clone();
+                        min.add(pos);
+                        max.add(pos);
+                        var holePoints = [new Vector2(min.x, min.y),new Vector2(max.x, min.y),new Vector2(max.x, max.y),new Vector2(min.x, max.y)];
+                        shape.holes.push(new Path(holePoints));
+                });
+
+                var geometry = new ShapeGeometry(shape);
+                geometry.vertices.forEach((v) => {
+                        v.applyMatrix4(invTransform);
+                });
+
+                var totalDistance = Utils.distance(new Vector2(v1.x, v1.z), new Vector2(v2.x, v2.z));
+                var height = top - bottom;
+                geometry.faceVertexUvs[0] = [];
+                geometry.faces.forEach((face) => {
+                        var vertA = geometry.vertices[face.a];
+                        var vertB = geometry.vertices[face.b];
+                        var vertC = geometry.vertices[face.c];
+                        geometry.faceVertexUvs[0].push([vertexToUv(vertA),vertexToUv(vertB),vertexToUv(vertC)]);
+                });
+                geometry.faceVertexUvs[1] = geometry.faceVertexUvs[0];
+                geometry.computeFaceNormals();
+                geometry.computeVertexNormals();
+
+                var scope = this;
+                function vertexToUv(vertex)
+                {
+                        var x = Utils.distance(new Vector2(v1.x, v1.z), new Vector2(vertex.x, vertex.z)) / totalDistance;
+                        var y = (vertex.y - (bottom + scope.edge.getStart().elevation)) / height;
+                        return new Vector2(x, y);
+                }
+
+                var mesh = new Mesh(geometry, material);
+                mesh.name = 'board';
+                return mesh;
+        }
 
 	buildSideFillter(p1, p2, height, color)
 	{
