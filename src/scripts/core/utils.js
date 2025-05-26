@@ -305,9 +305,11 @@ export class Utils
 				tSecondCorner = corners[tI + 1];
 			}
 
-			if (Utils.lineLineIntersect(start, point, tFirstCorner.x, tFirstCorner.y, tSecondCorner.x, tSecondCorner.y))
-			{
-				tIntersects++;
+                        if (Utils.lineLineIntersect(start, point,
+                            {x: tFirstCorner.x, y: tFirstCorner.y},
+                            {x: tSecondCorner.x, y: tSecondCorner.y}))
+                        {
+                                tIntersects++;
 			}
 		}
 		// odd intersections means the point is in the polygon
@@ -401,12 +403,13 @@ export class Utils
 	{
 		var tResults = [];
 		var tMap = {};
-		for (var tI = 0; tI < arr.length; tI++) {
-			if (!tMap.hasOwnProperty(arr[tI])) {
-				tResults.push(arr[tI]);
-				tMap[hashFunc(arr[tI])] = true;
-			}
-		}
+                for (var tI = 0; tI < arr.length; tI++) {
+                        var key = hashFunc(arr[tI]);
+                        if (!tMap.hasOwnProperty(key)) {
+                                tResults.push(arr[tI]);
+                                tMap[key] = true;
+                        }
+                }
 		return tResults;
 	}
 
