@@ -19,8 +19,10 @@ export const snapToGrid = 'snapToGrid';
 export const snapTolerance = 'snapTolerance';//In CMS
 /** Project type indicator to help customize the application. */
 export const configProjectMode = 'projectMode';
+/** Default reveal width for horizontal cladding boards in cm */
+export const configWallCladdingReveal = 'wallCladdingReveal';
 
-export var config = {dimUnit: dimCentiMeter, wallHeight: 250, wallThickness: 10, systemUI: false, scale: 1, snapToGrid: false, snapTolerance: 25, gridSpacing: 25, projectMode: 'DEFAULT'};
+export var config = {dimUnit: dimCentiMeter, wallHeight: 250, wallThickness: 10, systemUI: false, scale: 1, snapToGrid: false, snapTolerance: 25, gridSpacing: 25, projectMode: 'DEFAULT', wallCladdingReveal: 8.128};
 
 export var wallInformation = {exterior: false, interior: false, midline: true, labels: true, exteriorlabel:'e:', interiorlabel:'i:', midlinelabel:'m:'};
 
@@ -78,6 +80,7 @@ export class Configuration
 		case snapToGrid:
 		case snapTolerance:
 		case gridSpacing:
+                case configWallCladdingReveal:
 //			return Number(this.data[key]);
 			return Number(Configuration.getData()[key]);
 		default:
