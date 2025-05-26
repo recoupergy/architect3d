@@ -1,6 +1,9 @@
-WebGL based 3D interior designing tool with 2D Floor Planer
+# Sauna Planner Pro
+
+WebGL based 3D interior designing tool with 2D floor planner.
+
 ## About
-This is a customizable application built on three.js that allows users to design an interior space such as a home or apartment.
+This project now powers **Sauna Planner Pro**, a customized edition of the original Architect3D application. It allows users to design sauna layouts as well as general interior spaces using three.js.
 
 [Live Demo](http://amitukind.com/projects/architect3d/)
 

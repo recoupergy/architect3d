@@ -1,7 +1,7 @@
 {
   "name": "architect3d",
   "version": "0.1.0",
-  "description": "This is the core framework of architect3d for creating floorplans in 2d and 3d",
+  "description": "Core framework powering Sauna Planner Pro (architect3d) for creating floorplans in 2D and 3D",
   "main": "build/js/bp3djs.js",
   "scripts": {
     "build": "rollup -c",
