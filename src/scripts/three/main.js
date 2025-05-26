@@ -134,8 +134,15 @@ export class Main extends EventDispatcher
 		scope.camera = scope.perspectivecamera;
 // scope.camera = scope.orthocamera;
 
-		scope.renderer = scope.getARenderer();
-		scope.domElement.appendChild(scope.renderer.domElement);
+                scope.renderer = scope.getARenderer();
+                var canvasTarget = scope.domElement;
+                if (scope.canvasElement) {
+                        var target = document.getElementById(scope.canvasElement);
+                        if (target) {
+                                canvasTarget = target;
+                        }
+                }
+                canvasTarget.appendChild(scope.renderer.domElement);
 
 		scope.skybox = new Skybox(scope.scene, scope.renderer);
 
