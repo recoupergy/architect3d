@@ -1,6 +1,6 @@
-import {EventDispatcher, TextureLoader, RepeatWrapping, MeshBasicMaterial, MeshPhongMaterial,  FrontSide, DoubleSide, Vector2, Vector3, Face3, Geometry, Shape, ShapeGeometry, Mesh} from 'three';
+import {EventDispatcher, TextureLoader, RepeatWrapping, MeshBasicMaterial, MeshPhongMaterial,  FrontSide, DoubleSide, Vector2, Vector3, Face3, Geometry, Shape, ShapeGeometry, Mesh, Group} from 'three';
 import {EVENT_CHANGED} from '../core/events.js';
-import {Configuration, configWallHeight} from '../core/configuration.js';
+import {Configuration, configWallHeight, configWallCladdingReveal} from '../core/configuration.js';
 
 export class Floor extends EventDispatcher
 {
@@ -76,26 +76,35 @@ export class Floor extends EventDispatcher
 		return floor;
 	}
 
-	buildRoofVaryingHeight()
-	{
-		// setup texture
-		var roofMaterial = new MeshBasicMaterial({side: FrontSide,color: 0xe5e5e5});
-		var geometry = new Geometry();
+        buildRoofVaryingHeight()
+        {
+                var reveal = Configuration.getNumericValue(configWallCladdingReveal);
+                var roofGroup = new Group();
+                var bounds = {minY: Infinity, maxY: -Infinity};
+                this.room.corners.forEach((corner) => {
+                        bounds.minY = Math.min(bounds.minY, corner.y);
+                        bounds.maxY = Math.max(bounds.maxY, corner.y);
+                });
 
-		this.room.corners.forEach((corner) => {
-			var vertex = new Vector3(corner.x,corner.elevation, corner.y);
-			geometry.vertices.push(vertex);
-		});
-		for (var i=2;i<geometry.vertices.length;i++)
-		{
-			var face = new Face3(0, i-1, i);
-			geometry.faces.push(face);
-		}
-		var roof = new Mesh(geometry, roofMaterial);
-		// roof.rotation.set(Math.PI / 2, 0, 0);
-		// roof.position.y = Configuration.getNumericValue(configWallHeight);
-		return roof;
-	}
+                var boardCount = Math.ceil((bounds.maxY - bounds.minY) / reveal);
+                for (var i=0; i<boardCount; i++)
+                {
+                        var geometry = new Geometry();
+                        this.room.corners.forEach((corner) => {
+                                var yOffset = bounds.minY + i * reveal;
+                                var vertex = new Vector3(corner.x, corner.elevation, yOffset);
+                                geometry.vertices.push(vertex);
+                        });
+                        for (var j=2; j<geometry.vertices.length; j++)
+                        {
+                                geometry.faces.push(new Face3(0, j-1, j));
+                        }
+                        var material = new MeshBasicMaterial({side: FrontSide, color: 0xe5e5e5});
+                        var board = new Mesh(geometry, material);
+                        roofGroup.add(board);
+                }
+                return roofGroup;
+        }
 
 
 	buildRoofUniformHeight()
