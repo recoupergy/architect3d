@@ -19,7 +19,7 @@ export {ELogContext, ELogLevel, logContext, isLogging, log} from './core/log.js'
 export {dimInch, dimFeetAndInch, dimMeter, dimCentiMeter, dimMilliMeter, dimensioningOptions, decimals, Dimensioning} from './core/dimensioning.js';
 export {cmPerFoot, pixelsPerFoot, cmPerPixel, pixelsPerCm} from './core/dimensioning.js';
 
-export {cornerTolerance, configDimUnit, configWallHeight, configWallThickness, configSystemUI, wallInformation, scale, snapToGrid, snapTolerance, gridSpacing, config, Configuration} from './core/configuration.js';
+export {cornerTolerance, configDimUnit, configWallHeight, configWallThickness, configSystemUI, wallInformation, scale, snapToGrid, snapTolerance, gridSpacing, configProjectMode, config, Configuration} from './core/configuration.js';
 export {VIEW_TOP, VIEW_FRONT, VIEW_RIGHT, VIEW_LEFT, VIEW_ISOMETRY} from './core/constants.js';
 export {WallTypes} from './core/constants.js';
 
@@ -77,7 +77,7 @@ export {OBJExporter} from './exporters/OBJExporter.js';
 import {Model} from './model/model.js';
 import {Main} from './three/main.js';
 import {Floorplanner2D} from './floorplanner/floorplanner.js';
-import {Configuration, configDimUnit} from './core/configuration.js';
+import {Configuration, configDimUnit, configProjectMode} from './core/configuration.js';
 import {dimMeter} from './core/dimensioning.js';
 //
 ///** VestaDesigner core application. */

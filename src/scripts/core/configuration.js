@@ -17,8 +17,10 @@ export const scale = 'scale';
 export const gridSpacing = 'gridSpacing';
 export const snapToGrid = 'snapToGrid';
 export const snapTolerance = 'snapTolerance';//In CMS
+/** Project type indicator to help customize the application. */
+export const configProjectMode = 'projectMode';
 
-export var config = {dimUnit: dimCentiMeter, wallHeight: 250, wallThickness: 10, systemUI: false, scale: 1, snapToGrid: false, snapTolerance: 25, gridSpacing: 25};
+export var config = {dimUnit: dimCentiMeter, wallHeight: 250, wallThickness: 10, systemUI: false, scale: 1, snapToGrid: false, snapTolerance: 25, gridSpacing: 25, projectMode: 'DEFAULT'};
 
 export var wallInformation = {exterior: false, interior: false, midline: true, labels: true, exteriorlabel:'e:', interiorlabel:'i:', midlinelabel:'m:'};
 
@@ -57,6 +59,8 @@ export class Configuration
 		case configDimUnit:
 //			return String(this.data[key]);
 			return String(Configuration.getData()[key]);
+                case configProjectMode:
+                        return String(Configuration.getData()[key]);
 		default:
 			throw new Error('Invalid string configuration parameter: ' + key);
 		}

@@ -20,6 +20,11 @@ This is a customizable application built on three.js that allows users to design
 
 ![3d_design](./images/floorplan3d.png)
 
+## Sauna Planning Mode
+
+The project is gradually evolving into a sauna planning tool. A new configuration flag `projectMode` can be set to `SAUNA` to prepare the application for upcoming sauna specific features. See [docs/SAUNA_MODE.md](docs/SAUNA_MODE.md) for details.
+
+
 ## Developing and Running Locally
 
 To get started, clone the repository and ensure you npm >= 3 and rollup installed, then run:
